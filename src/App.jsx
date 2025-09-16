@@ -56,60 +56,125 @@ function App() {
       console.log("chats fetched successfully", data.data);
       const objArray = [];
 
-      Object.keys(data.data).forEach(key => objArray.push({
-        groupdId: key,
-        members: data.data[key]
-      }));
+      setPid(data.processData.taskId);
+      setGroups(data.data);
 
-      setPid(data.taskId);
-      setGroups(objArray);
+      console.log("objArray", objArray);
     } catch (error) {
       console.log("something went wrong while fetching chats", error);
     }
   };
 
+  console.log("groups", typeof groups);
 
   return (
-    <>
+    <div className="app-container" style={{
+      maxWidth: 400,
+      margin: "40px auto",
+      padding: 24,
+      borderRadius: 12,
+      boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+      background: "#fff",
+      fontFamily: "Segoe UI, Arial, sans-serif"
+    }}>
+      <h2 style={{ textAlign: "center", marginBottom: 24 }}>Enter Device Name</h2>
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        <input
+          type="text"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          placeholder="Device name"
+          style={{
+            flex: 1,
+            padding: "8px 12px",
+            borderRadius: 6,
+            border: "1px solid #ccc",
+            fontSize: 16
+          }}
+        />
+        <button
+          onClick={fetchQr}
+          style={{
+            padding: "8px 16px",
+            borderRadius: 6,
+            border: "none",
+            background: "#0078d4",
+            color: "#fff",
+            fontWeight: 500,
+            cursor: "pointer"
+          }}
+        >
+          Add
+        </button>
+      </div>
 
-      <h1>enter device name</h1>
-      <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
-      <button onClick={fetchQr}>add</button>
+      {pid && <p style={{ color: "#555", fontSize: 14 }}>Process ID From the server: <span style={{ fontWeight: 600 }}>{pid}</span></p>}
 
-      {
-        pid && <p>pid: {pid}</p>
-      }
-
-      {loading && <p>Loading QR...</p>}
+      {loading && <p style={{ color: "#0078d4" }}>Loading QR...</p>}
 
       {qrCode ? (
-        <>
-          <p>Scan the QR code for WhatsApp login</p>
-          <img src={qrCode} alt="QR Code" />
-        </>
+        <div style={{ textAlign: "center", margin: "24px 0" }}>
+          <p style={{ marginBottom: 8 }}>Scan the QR code for WhatsApp login</p>
+          <img
+            src={qrCode}
+            alt="QR Code"
+            style={{
+              width: 180,
+              height: 180,
+              borderRadius: 8,
+              border: "1px solid #eee",
+              background: "#fafafa"
+            }}
+          />
+        </div>
       ) : !loading && (
-        <p>No QR code available.</p>
+        <p style={{ color: "#888", textAlign: "center" }}>No QR code available.</p>
       )}
 
-      <button onClick={fetchChats}>Click here for fetching the chats</button>
+      <button
+        onClick={fetchChats}
+        style={{
+          width: "100%",
+          padding: "10px 0",
+          borderRadius: 6,
+          border: "none",
+          background: "#28a745",
+          color: "#fff",
+          fontWeight: 500,
+          cursor: "pointer",
+          margin: "16px 0"
+        }}
+      >
+        Fetch Groups
+      </button>
 
-      {
-        groups?.length > 0 && (
-          <div>
-            <h2>Groups:</h2>
-            <ul>
-              {groups.map((group) => (
-                <li key={group.groupdId}>
-                  <p><strong>Name:</strong> {group.name}</p>
-                  <p><strong>ID:</strong> {group.groupdId}</p>
-                  <p><strong>Members:</strong> {group.members.length}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-    </>
+      {groups && groups.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <h3 style={{ marginBottom: 12 }}>Groups:</h3>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {groups.map((group, index) => (
+              <li
+                key={group.groupId}
+                style={{
+                  background: "#f4f6fa",
+                  borderRadius: 8,
+                  padding: "12px 16px",
+                  marginBottom: 10,
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.04)"
+                }}
+              >
+                <p style={{ margin: 0, fontWeight: 600 }}>
+                  <span style={{ color: "#0078d4" }}>Name:</span> {group.subject || "No Name"}
+                </p>
+                <p style={{ margin: "4px 0 0 0", color: "#555" }}>
+                  <span style={{ color: "#28a745" }}>ID:</span> {group.id || "N/A" }
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   )
 }
 
