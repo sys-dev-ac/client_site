@@ -6,6 +6,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([]);
   const [pid, setPid] = useState(null);
+  const [isgroupLoading, setIsgroupLoading] = useState(false);
 
   const [id, setId] = useState("");
 
@@ -45,6 +46,7 @@ function App() {
 
   const fetchChats = async () => {
     try {
+      setIsgroupLoading(true);
       const res = await fetch(`${backendUrl}/groups?id=${id}`, {
         method: "GET",
         headers: {
@@ -54,18 +56,17 @@ function App() {
 
       const data = await res.json();
       console.log("chats fetched successfully", data.data);
-      const objArray = [];
 
       setPid(data.processData.taskId);
       setGroups(data.data);
 
-      console.log("objArray", objArray);
     } catch (error) {
       console.log("something went wrong while fetching chats", error);
+    } finally { 
+      setIsgroupLoading(false);
     }
   };
 
-  console.log("groups", typeof groups);
 
   return (
     <div className="app-container" style={{
@@ -145,7 +146,7 @@ function App() {
           margin: "16px 0"
         }}
       >
-        Fetch Groups
+        {isgroupLoading ? "Loading Groups..." : "Fetch Groups"}
       </button>
 
       {groups && groups.length > 0 && (
