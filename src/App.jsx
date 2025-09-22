@@ -16,8 +16,10 @@ function App() {
     "test-session-678"
   ]
 
-  const backendUrl = "http://localhost";
-  // const backendUrl = "http://learn-sticky-lb-419680506.ap-south-1.elb.amazonaws.com"
+  // const backendUrl = "https://whatsapp.local"; // nginx server 
+  // const backendUrl  = "http://localhost:8000"
+  // const backendUrl = "http://210.79.128.162:8000"
+  const backendUrl = "http://ws-stage-lb-210034335.ap-south-1.elb.amazonaws.com"
 
   const fetchQr = async () => {
     try {
@@ -35,7 +37,7 @@ function App() {
       });
 
       const data = await res.json();
-      setQrCode(data.data.qrImage);
+      setQrCode(data.data.qr);
       console.log("qr code fetched successfully", data.data.qrImage);
     } catch (error) {
       console.log("something went wrong while fetching qr code", error);
@@ -47,7 +49,7 @@ function App() {
   const fetchChats = async () => {
     try {
       setIsgroupLoading(true);
-      const res = await fetch(`${backendUrl}/groups?id=${id}`, {
+      const res = await fetch(`${backendUrl}/groups/list/?id=${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
@@ -57,16 +59,17 @@ function App() {
       const data = await res.json();
       console.log("chats fetched successfully", data.data);
 
-      setPid(data.processData.taskId);
+      // setPid(data.processData.taskId);
       setGroups(data.data);
+
+      console.log(data.data);
 
     } catch (error) {
       console.log("something went wrong while fetching chats", error);
-    } finally { 
+    } finally {
       setIsgroupLoading(false);
     }
   };
-
 
   return (
     <div className="app-container" style={{
@@ -168,7 +171,7 @@ function App() {
                   <span style={{ color: "#0078d4" }}>Name:</span> {group.subject || "No Name"}
                 </p>
                 <p style={{ margin: "4px 0 0 0", color: "#555" }}>
-                  <span style={{ color: "#28a745" }}>ID:</span> {group.id || "N/A" }
+                  <span style={{ color: "#28a745" }}>ID:</span> {group.id || "N/A"}
                 </p>
               </li>
             ))}
@@ -179,4 +182,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
