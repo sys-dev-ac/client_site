@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import DateJsComponent from "./components/DateJsComponent.jsx";
+import Search from "./components/Search.jsx";
 
 function App() {
   const [qrCode, setQrCode] = useState(null);
@@ -7,8 +9,10 @@ function App() {
   const [groups, setGroups] = useState([]);
   const [pid, setPid] = useState(null);
   const [isgroupLoading, setIsgroupLoading] = useState(false);
+  const [status, setStatus] = useState("");
 
   const [id, setId] = useState("");
+  const [groupId, setGroupId] = useState("");
 
   let names = [
     'test-session-1',
@@ -17,9 +21,11 @@ function App() {
   ]
 
   // const backendUrl = "https://whatsapp.local"; // nginx server 
-  // const backendUrl  = "http://localhost:8000"
+  // const backendUrl = "http://localhost:8000"
+  const backendUrl = "https://lp313wlgz9.execute-api.us-east-2.amazonaws.com/production"
+  // const backendUrl = "http://13.127.84.237"
   // const backendUrl = "http://210.79.128.162:8000"
-  const backendUrl = "http://ws-stage-lb-210034335.ap-south-1.elb.amazonaws.com"
+  // const backendUrl = "https://koago0jzb4.execute-api.ap-south-1.amazonaws.com/dev"
 
   const fetchQr = async () => {
     try {
@@ -71,6 +77,74 @@ function App() {
     }
   };
 
+
+  const fetchDeviceStatus = async () => {
+    try {
+      const res = await fetch(`${backendUrl}/sessions/status/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const data = await res.json();
+      console.log("device status fetched successfully", data);
+
+      if (data.valid_session) {
+        setStatus('connected');
+      }
+    } catch (error) {
+      console.log("something went wrong while fetching device status", error);
+    }
+  }
+
+  // the same function can be used to send the message to community and group both 
+  const sendMessageToGroup = async (groupId, message) => {
+    try {
+      const res = await fetch(`${backendUrl}/groups/send/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          reciever: groupId,
+          message
+        })
+      });
+
+      const data = await res.json();
+      console.log("message sent successfully", data);
+
+    } catch (error) {
+      console.error("Something went wrong while sending the message to the group", error);
+    }
+  }
+
+  const setGroupID = (id) => {
+    setGroupId(id);
+  }
+
+  const logout = async () => {
+    try {
+      const res = await fetch(`${backendUrl}/sessions/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const data = await res.json();
+      console.log("device logged out successfully", data);
+    }
+    catch (error) {
+      console.log("something went wrong while logging out", error);
+    }
+  }
+
+  useEffect(() =>{
+    console.log("id changed:", id)
+  },[id])
+
   return (
     <div className="app-container" style={{
       maxWidth: 400,
@@ -111,6 +185,14 @@ function App() {
           Add
         </button>
       </div>
+
+      {status && <p style={{ color: "#555", fontSize: 14 }}>Status: <span style={{ fontWeight: 600 }}>{status}</span></p>}
+      <button onClick={fetchDeviceStatus}>fetch status</button>
+
+      <p>The selected groupId : {groupId}</p>
+      <button onClick={() => sendMessageToGroup(groupId, "Hello Community or group!")}>Send Message</button>
+
+      <button onClick={logout}>logout</button>
 
       {pid && <p style={{ color: "#555", fontSize: 14 }}>Process ID From the server: <span style={{ fontWeight: 600 }}>{pid}</span></p>}
 
@@ -159,6 +241,7 @@ function App() {
             {groups.map((group, index) => (
               <li
                 key={group.groupId}
+                onClick={() => setGroupID(group.groupId)}
                 style={{
                   background: "#f4f6fa",
                   borderRadius: 8,
@@ -167,17 +250,20 @@ function App() {
                   boxShadow: "0 1px 4px rgba(0,0,0,0.04)"
                 }}
               >
-                <p style={{ margin: 0, fontWeight: 600 }}>
-                  <span style={{ color: "#0078d4" }}>Name:</span> {group.subject || "No Name"}
-                </p>
-                <p style={{ margin: "4px 0 0 0", color: "#555" }}>
-                  <span style={{ color: "#28a745" }}>ID:</span> {group.id || "N/A"}
-                </p>
+                 <p style={{ margin: 0, fontWeight: 600 }}>
+                    <span style={{ color: "#0078d4" }}>Name:</span> {group.subject || "No Name"}
+                  </p>
+                  <p style={{ margin: "4px 0 0 0", color: "#555" }}>
+                    <span style={{ color: "#28a745" }}>ID:</span> {group.id || "N/A"}
+                  </p>
               </li>
             ))}
           </ul>
         </div>
       )}
+
+      <DateJsComponent/>
+      <Search />
     </div>
   )
 }
