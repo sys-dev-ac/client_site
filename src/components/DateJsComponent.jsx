@@ -5,9 +5,9 @@ import timezone from "dayjs/plugin/timezone.js";
 
 const DateJsComponent = () => {
 
-   dayjs().subtract(1, 'day');
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
+    dayjs().subtract( 1, 'day' );
+    dayjs.extend( utc );
+    dayjs.extend( timezone );
 
     const istSlots = [
         "2025-10-15T09:00:00+05:30",
@@ -23,21 +23,21 @@ const DateJsComponent = () => {
     ];
 
     const selectedTz = "America/New_York";
-   // console.log(dayjs().subtract(2, 'day'));
+    // console.log(dayjs().subtract(2, 'day'));
 
-    console.log("the timezones list " ,timezone)
+    console.log( "the timezones list ", timezone )
 
-    const convertedSlots = istSlots.map(slot =>
-        dayjs(slot).tz(selectedTz).format("YYYY-MM-DD hh:mm A")
+    const convertedSlots = istSlots.map( slot =>
+        dayjs( slot ).tz( selectedTz ).format( "YYYY-MM-DD hh:mm A" )
     )
 
-    console.log("Converted Slots: ", convertedSlots);
-   console.log(dayjs('2018-08-08'));
+    console.log( "Converted Slots: ", convertedSlots );
+    console.log( dayjs( '2018-08-08' ) );
 
     return (
         <>
-    <p>Hello world</p>
-</>
+            <p>Hello world</p>
+        </>
     );
 }
 
