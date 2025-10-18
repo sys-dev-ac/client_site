@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import DateJsComponent from "./components/DateJsComponent.jsx";
 import Search from "./components/Search.jsx";
+import TanStack from "./components/TanStack.js";
+import ConfigBasedForm from "./components/ConfigBasedForm.jsx";
 
 function App() {
   const [qrCode, setQrCode] = useState(null);
@@ -21,8 +23,8 @@ function App() {
   ]
 
   // const backendUrl = "https://whatsapp.local"; // nginx server 
-  // const backendUrl = "http://localhost:8000"
-  const backendUrl = "https://lp313wlgz9.execute-api.us-east-2.amazonaws.com/production"
+  const backendUrl = "http://localhost:8000"
+  // const backendUrl = "https://lp313wlgz9.execute-api.us-east-2.amazonaws.com/production"
   // const backendUrl = "http://13.127.84.237"
   // const backendUrl = "http://210.79.128.162:8000"
   // const backendUrl = "https://koago0jzb4.execute-api.ap-south-1.amazonaws.com/dev"
@@ -262,9 +264,13 @@ function App() {
         </div>
       )}
 
-      <DateJsComponent/>
-      <Search />
+      {/*<DateJsComponent/>*/}
+      {/*<Search />*/}
+      {/*<TanStack/>*/}
+      <ConfigBasedForm/>
     </div>
+
+
   )
 }
 
