@@ -24,9 +24,9 @@ function App() {
 
   // const backendUrl = "https://whatsapp.local"; // nginx server 
   const backendUrl = "http://localhost:8000"
+  // const backendUrl = "https://wasender.myappz.ai"
   // const backendUrl = "https://lp313wlgz9.execute-api.us-east-2.amazonaws.com/production"
-  // const backendUrl = "http://13.127.84.237"
-  // const backendUrl = "http://210.79.128.162:8000"
+  // const backendUrl = "http://18.188.139.161"
   // const backendUrl = "https://koago0jzb4.execute-api.ap-south-1.amazonaws.com/dev"
 
   const fetchQr = async () => {
@@ -45,7 +45,7 @@ function App() {
       });
 
       const data = await res.json();
-      setQrCode(data.data.qr);
+      setQrCode(data.data.qrcode);
       console.log("qr code fetched successfully", data.data.qrImage);
     } catch (error) {
       console.log("something went wrong while fetching qr code", error);
@@ -240,7 +240,7 @@ function App() {
         <div style={{ marginTop: 24 }}>
           <h3 style={{ marginBottom: 12 }}>Groups:</h3>
           <ul style={{ listStyle: "none", padding: 0 }}>
-            {groups.map((group, index) => (
+            {groups.map((group) => (
               <li
                 key={group.groupId}
                 onClick={() => setGroupID(group.groupId)}
@@ -267,7 +267,8 @@ function App() {
       {/*<DateJsComponent/>*/}
       {/*<Search />*/}
       {/*<TanStack/>*/}
-      <ConfigBasedForm/>
+      {/* <ConfigBasedForm/> */}
+      {/* <Logger/> */}
     </div>
 
 
